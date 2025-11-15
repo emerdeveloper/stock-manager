@@ -1,0 +1,4 @@
+{"name":"item1","enteredByUser":"user1","buyingPrice":50.0,"sellingPrice":55.0}
+{"name":"item2","enteredByUser":"user1","buyingPrice":50.0,"sellingPrice":60.0}
+{"name":"item3","enteredByUser":"user2","buyingPrice":50.0,"sellingPrice":70.0}
+{"name":"item4","enteredByUser":"user2","buyingPrice":50.0,"sellingPrice":75.0}
