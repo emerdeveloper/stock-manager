@@ -3,6 +3,9 @@ package com.emegonza.stock.manager.controller;
 import com.emegonza.stock.manager.enums.ProductStatus;
 import com.emegonza.stock.manager.model.ProductDto;
 import com.emegonza.stock.manager.service.ProductService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,11 +70,21 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(service.getAllProducts());
     }
 
-    //GET filters by fields ?itemStatus={status}&itemEnteredByUser={modifiedBy}
+    //GET filters by fields ?status={status}&enteredByUser={modifiedBy}
     @GetMapping(params = {"status", "enteredByUser"})
     public ResponseEntity<List<ProductDto>> getProductByStatusAndEnteredByUser(
             @RequestParam("status") ProductStatus status,
             @RequestParam("enteredByUser") String enteredByUser) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getProductByStatusAndEnteredByUser(status, enteredByUser));
+    }
+
+    //GET select all with sorting and pagination ?pageSize={pageSize}&page={page}&sortBy={sortBy}
+    @GetMapping(params = {"pageSize", "page", "sortBy"})
+    public ResponseEntity<List<ProductDto>> getProductWithPage(@RequestParam("pageSize") int pageSize,
+                                                               @RequestParam("page") int page,
+                                                               @RequestParam("sortBy") String sortBy) {
+        Sort sort = Sort.by(Sort.Direction.fromString("ASC"), sortBy);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        return ResponseEntity.status(HttpStatus.OK).body(service.getProductsWithPagination(pageable));
     }
 }

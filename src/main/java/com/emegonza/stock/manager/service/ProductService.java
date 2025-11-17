@@ -5,9 +5,9 @@ import com.emegonza.stock.manager.model.ProductDto;
 import com.emegonza.stock.manager.model.ProductEntity;
 import com.emegonza.stock.manager.repository.IProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,6 +78,13 @@ public class ProductService {
         return repository.findByStatusAndEnteredByUser(status, enteredByUser)
                 .stream()
                 .map(Mapper::productEntityToDto)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public List<ProductDto> getProductsWithPagination(Pageable page){
+        return repository.findAll(page)
+                .stream()
+                .map(Mapper::productEntityToDto)
+                .toList();
     }
 }
