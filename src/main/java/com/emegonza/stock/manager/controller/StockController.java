@@ -5,6 +5,7 @@ import com.emegonza.stock.manager.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class StockController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") int id) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Integer id) {
         return service.getProduct(id)
                 .map(product -> ResponseEntity.status(HttpStatus.OK).body(product))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -38,9 +39,16 @@ public class StockController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") int id, @RequestBody ProductDto product) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Integer id, @RequestBody ProductDto product) {
         return service.updateProduct(id, product)
                 .map(productUpdated -> ResponseEntity.status(HttpStatus.OK).body(productUpdated))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Integer id) {
+        return service.deleteProduct(id) ?
+                ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

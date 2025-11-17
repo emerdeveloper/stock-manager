@@ -47,4 +47,15 @@ public class ProductService {
                 })
                 .or(Optional::empty);
     }
+
+    public boolean deleteProduct(Integer id) {
+        return Optional.ofNullable(id)
+                .filter(idFiltered -> repository.findById(idFiltered).isPresent())
+                .map(idFiltered -> {
+                    repository.deleteById(idFiltered);
+                    return Boolean.TRUE;
+                })
+                .orElse(Boolean.FALSE);
+
+    }
 }
