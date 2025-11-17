@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,5 +35,12 @@ public class StockController {
         return service.saveProduct(product)
                 .map(productSaved -> ResponseEntity.status(HttpStatus.CREATED).body(product))
                 .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") int id, @RequestBody ProductDto product) {
+        return service.updateProduct(id, product)
+                .map(productUpdated -> ResponseEntity.status(HttpStatus.OK).body(productUpdated))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }

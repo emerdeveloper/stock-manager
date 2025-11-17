@@ -35,4 +35,16 @@ public class ProductService {
                     return Optional.of(Mapper.productEntityToDto(entity));
                 });
     }
+
+    public Optional<ProductDto> updateProduct(Integer id, ProductDto product) {
+        return Optional.ofNullable(id)
+                .filter(idFiltered -> repository.findById(idFiltered).isPresent())
+                .map(idFiltered -> {
+                    ProductEntity entity = Mapper.productDtoToEntity(product);
+                    entity.setId(idFiltered);
+                    ProductEntity entityUpdated = repository.save(entity);
+                    return Mapper.productEntityToDto(entityUpdated);
+                })
+                .or(Optional::empty);
+    }
 }
