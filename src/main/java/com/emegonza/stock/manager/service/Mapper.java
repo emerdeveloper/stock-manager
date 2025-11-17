@@ -6,13 +6,27 @@ import com.emegonza.stock.manager.model.ProductEntity;
 public class Mapper {
 
     public static ProductDto productEntityToDto(ProductEntity entity) {
-        return new ProductDto(entity.getName(),
+        return new ProductDto(entity.getId(),
+                entity.getName(),
                 entity.getEnteredByUser(),
-                entity.getEnteredDate().toString(),
+                entity.getEnteredDate(),
                 entity.getBuyingPrice(),
                 entity.getSellingPrice(),
-                entity.getLastModifiedDate().toString(),
+                entity.getLastModifiedDate(),
                 entity.getLastModifiedByUser(),
                 entity.getStatus());
+    }
+
+    public static ProductEntity productDtoToEntity(ProductDto product) {
+        ProductEntity entity = new ProductEntity();
+        entity.setId(product.id());
+        entity.setName(product.name());
+        entity.setBuyingPrice(product.buyingPrince());
+        entity.setStatus(product.status());
+        entity.setEnteredByUser(product.enteredByUser());
+        entity.setSellingPrice(product.sellingPrice());
+        entity.setLastModifiedByUser(product.lastModifiedByUser());
+        entity.setLastModifiedDate(product.lastModifiedDate());
+        return entity;
     }
 }
