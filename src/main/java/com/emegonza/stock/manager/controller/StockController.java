@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/stock/product", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StockController {
@@ -56,5 +58,10 @@ public class StockController {
     public ResponseEntity<Void> deleteAllProducts() {
         service.deleteAllProducts();
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(service.getAllProducts());
     }
 }

@@ -6,7 +6,10 @@ import com.emegonza.stock.manager.repository.IProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -61,5 +64,12 @@ public class ProductService {
 
     public void deleteAllProducts() {
         repository.deleteAll();
+    }
+
+    public List<ProductDto> getAllProducts() {
+        return repository.findAll()
+                .stream()
+                .map(Mapper::productEntityToDto)
+                .collect(Collectors.toList());
     }
 }
