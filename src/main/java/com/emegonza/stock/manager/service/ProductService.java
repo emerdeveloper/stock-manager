@@ -58,4 +58,8 @@ public class ProductService {
                 .orElse(Boolean.FALSE);
 
     }
+
+    public void deleteAllProducts() {
+        repository.deleteAll();
+    }
 }

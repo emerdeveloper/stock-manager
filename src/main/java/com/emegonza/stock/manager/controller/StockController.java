@@ -51,4 +51,10 @@ public class StockController {
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllProducts() {
+        service.deleteAllProducts();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
