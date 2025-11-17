@@ -1,5 +1,6 @@
 package com.emegonza.stock.manager.service;
 
+import com.emegonza.stock.manager.enums.ProductStatus;
 import com.emegonza.stock.manager.model.ProductDto;
 import com.emegonza.stock.manager.model.ProductEntity;
 import com.emegonza.stock.manager.repository.IProductRepository;
@@ -68,6 +69,13 @@ public class ProductService {
 
     public List<ProductDto> getAllProducts() {
         return repository.findAll()
+                .stream()
+                .map(Mapper::productEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getProductByStatusAndEnteredByUser(ProductStatus status, String enteredByUser) {
+        return repository.findByStatusAndEnteredByUser(status, enteredByUser)
                 .stream()
                 .map(Mapper::productEntityToDto)
                 .collect(Collectors.toList());

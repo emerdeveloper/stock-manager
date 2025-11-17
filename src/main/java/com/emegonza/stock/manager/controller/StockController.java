@@ -1,5 +1,6 @@
 package com.emegonza.stock.manager.controller;
 
+import com.emegonza.stock.manager.enums.ProductStatus;
 import com.emegonza.stock.manager.model.ProductDto;
 import com.emegonza.stock.manager.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -63,5 +65,13 @@ public class StockController {
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         return ResponseEntity.status(HttpStatus.OK).body(service.getAllProducts());
+    }
+
+    //GET filters by fields ?itemStatus={status}&itemEnteredByUser={modifiedBy}
+    @GetMapping(params = {"status", "enteredByUser"})
+    public ResponseEntity<List<ProductDto>> getProductByStatusAndEnteredByUser(
+            @RequestParam("status") ProductStatus status,
+            @RequestParam("enteredByUser") String enteredByUser) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.getProductByStatusAndEnteredByUser(status, enteredByUser));
     }
 }
