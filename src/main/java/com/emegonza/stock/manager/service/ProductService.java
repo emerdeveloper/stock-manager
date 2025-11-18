@@ -29,12 +29,14 @@ public class ProductService {
 
     public Optional<ProductDto> saveProduct(ProductDto product) {
         return Optional.ofNullable(product.id())
-                .filter(id -> repository.findById(id).isEmpty())
-                .map(id -> {
-                    ProductEntity entity = repository.save(Mapper.productDtoToEntity(product));
-                    return Mapper.productEntityToDto(entity);
-                })
-                .or(() -> {
+                .map(id ->
+                     repository.findById(id)
+                            .map(entity -> Optional.<ProductDto>empty())
+                            .orElseGet(() -> {
+                                ProductEntity entity = repository.save(Mapper.productDtoToEntity(product));
+                                return Optional.of(Mapper.productEntityToDto(entity));
+                            }))
+                .orElseGet(() -> {
                     ProductEntity entity = repository.save(Mapper.productDtoToEntity(product));
                     return Optional.of(Mapper.productEntityToDto(entity));
                 });

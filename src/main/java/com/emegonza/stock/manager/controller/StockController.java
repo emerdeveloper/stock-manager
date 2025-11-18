@@ -41,7 +41,7 @@ public class StockController {
     @PostMapping
     public ResponseEntity<ProductDto> sveProduct(@RequestBody ProductDto product) {
         return service.saveProduct(product)
-                .map(productSaved -> ResponseEntity.status(HttpStatus.CREATED).body(product))
+                .map(productSaved -> ResponseEntity.status(HttpStatus.CREATED).body(productSaved))
                 .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
