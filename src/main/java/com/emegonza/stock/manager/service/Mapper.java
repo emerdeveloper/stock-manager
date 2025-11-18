@@ -22,11 +22,15 @@ public class Mapper {
         entity.setId(product.id());
         entity.setName(product.name());
         entity.setBuyingPrice(product.buyingPrince());
-        entity.setStatus(product.status());
         entity.setEnteredByUser(product.enteredByUser());
         entity.setSellingPrice(product.sellingPrice());
         entity.setLastModifiedByUser(product.lastModifiedByUser());
-        entity.setLastModifiedDate(product.lastModifiedDate());
+        if (product.lastModifiedDate() != null) {
+            entity.setLastModifiedDate(product.lastModifiedDate());
+        }
+        if (product.status() != null) {
+            entity.setStatus(product.status());
+        }
         return entity;
     }
 }
