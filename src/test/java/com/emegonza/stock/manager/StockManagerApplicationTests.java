@@ -19,6 +19,8 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -82,6 +84,13 @@ class StockManagerApplicationTests {
                 .andExpect(jsonPath("$.lastModifiedDate", is(notNullValue())))
                 .andExpect(jsonPath("$.id", greaterThan(0)))
                 .andExpect(status().isCreated());
+
+        //check number of products increase
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -99,6 +108,57 @@ class StockManagerApplicationTests {
                         .content(product))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+
+        //check number of products no increase
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(status().isOk());
     }
+
+    @Test
+    public void updateProductNotFound_Error_Test() throws Exception {
+        String product = "{\n" +
+                "\t\"name\": \"item_x\",\n" +
+                "\t\"enteredByUser\": \"user_x\",\n" +
+                "\t\"buyingPrice\": 50.0,\n" +
+                "\t\"sellingPrice\": 55.0\n" +
+                "}";
+
+        mockMvc.perform(put("/api/stock/product/"+ -1)
+                        .contentType("application/json")
+                        .content(product))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateProduct_Ok_Test() throws Exception {
+        var id = 1;
+        String product = "{\n" +
+                "\t\"name\": \"item_updated\",\n" +
+                "\t\"lastModifiedByUser\": \"user_updater\",\n" +
+                "\t\"buyingPrice\": 50.0,\n" +
+                "\t\"sellingPrice\": 55.0\n" +
+                "}";
+
+        mockMvc.perform(put("/api/stock/product/"+ id)
+                        .contentType("application/json")
+                        .content(product))
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name", is("item_updated")))
+                .andExpect(jsonPath("$.lastModifiedByUser", is("user_updater")))
+                .andExpect(status().isOk());
+
+        //check number of products no increase
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(status().isOk());
+    }
+
 
 }
