@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -160,5 +161,36 @@ class StockManagerApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void deleteProduct_WhenProductNotFund_Error_Test() throws Exception {
+        var id = -1;
+
+        mockMvc.perform(delete("/api/stock/product/"+id))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        //check number of products no increase
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteProduct_Ok_Test() throws Exception {
+        var id = 1;
+
+        mockMvc.perform(delete("/api/stock/product/"+id))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //check number of products no increase
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(status().isOk());
+    }
 
 }
