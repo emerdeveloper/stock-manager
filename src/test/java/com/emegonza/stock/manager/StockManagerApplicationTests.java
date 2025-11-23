@@ -185,7 +185,7 @@ class StockManagerApplicationTests {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        //check number of products no increase
+        //check number of products decrease
         mockMvc.perform(get("/api/stock/product")
                         .contentType("application/json"))
                 .andDo(print())
@@ -193,4 +193,51 @@ class StockManagerApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void deleteAll_OK_Test() throws Exception {
+        mockMvc.perform(delete("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //check there are not products
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getProductAll_OK_Test() throws Exception {
+        mockMvc.perform(get("/api/stock/product")
+                        .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getProductByParams_OK_Test() throws Exception {
+        mockMvc.perform(get("/api/stock/product")
+                        .param("status", "AVAILABLE")
+                        .param("enteredByUser", "user1")
+                .contentType("application/json"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getProductByPaginationAndSorting() throws Exception {
+        mockMvc.perform(get("/api/stock/product")
+                        .param("pageSize", "2")
+                        .param("page", "1")
+                        .param("sortBy", "name"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[0].name", is("item3")))
+                .andExpect(jsonPath("$.[1].enteredByUser", is("user2")))
+                .andExpect(status().isOk());
+    }
 }
